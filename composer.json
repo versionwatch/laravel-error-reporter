@@ -1,0 +1,23 @@
+{
+    "name": "versionwatch/laravel-error-reporter",
+    "description": "VersionWatch Error reporting for Laravel applications",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "laravel/framework": "^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "VersionWatch\\ErrorReporter\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VersionWatch\\ErrorReporter\\ErrorReporterServiceProvider"
+            ]
+        }
+    }
+}

@@ -1,0 +1,19 @@
+<?php
+
+namespace VersionWatch\ErrorReporter\Exceptions;
+
+use Illuminate\Foundation\Exceptions\Handler;
+use Throwable;
+use VersionWatch\ErrorReporter\ErrorReporter;
+
+class ErrorReportingHandler extends Handler
+{
+    public function report(Throwable $e)
+    {
+        if ($this->shouldReport($e) && config('error-reporter.enabled')) {
+            ErrorReporter::report($e);
+        }
+
+        parent::report($e);
+    }
+}
