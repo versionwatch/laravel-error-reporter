@@ -31,7 +31,7 @@ class ErrorReporter
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'environment' => [
-                'language' => PHP_VERSION,
+                'language' => "PHP " . PHP_VERSION,
                 'framework' => app()->version(),
                 'environment' => config('app.env'),
             ],
