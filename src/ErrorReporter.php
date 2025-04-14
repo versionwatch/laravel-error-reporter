@@ -31,8 +31,8 @@ class ErrorReporter
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'environment' => [
-                'php_version' => PHP_VERSION,
-                'laravel_version' => app()->version(),
+                'language' => PHP_VERSION,
+                'framework' => app()->version(),
                 'environment' => config('app.env'),
             ],
             'context' => [
