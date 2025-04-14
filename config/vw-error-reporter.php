@@ -1,4 +1,3 @@
-// config/error-reporter.php
 <?php
 
 return [

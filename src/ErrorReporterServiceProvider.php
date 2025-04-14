@@ -22,7 +22,7 @@ class ErrorReporterServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/vw-error-reporter.php' => config_path('vw-error-reporter.php'),
-            ], 'vw-error-reporter-config');
+            ], 'vw-error-reporter');
         }
     }
 }

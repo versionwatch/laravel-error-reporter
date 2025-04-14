@@ -13,7 +13,7 @@ class ErrorReporter
     {
         try {
             self::$client = new Client([
-                'base_uri' => config('error-reporter.endpoint'),
+                'base_uri' => config('vw-error-reporter.endpoint'),
                 'timeout' => 5,
             ]);
 
@@ -36,8 +36,8 @@ class ErrorReporter
 
             self::$client->post('/api/errors/report', [
                 'headers' => [
-                    'X-Project-ID' => config('error-reporter.project_id'),
-                    'X-Project-Key' => config('error-reporter.api_key'),
+                    'X-Project-ID' => config('vw-error-reporter.project_id'),
+                    'X-Project-Key' => config('vw-error-reporter.api_key'),
                 ],
                 'json' => $payload
             ]);
