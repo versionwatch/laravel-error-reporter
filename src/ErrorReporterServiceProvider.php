@@ -9,7 +9,7 @@ class ErrorReporterServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/error-reporter.php', 'error-reporter');
+        $this->mergeConfigFrom(__DIR__.'/../config/vw-error-reporter.php', 'vw-error-reporter');
         
         $this->app->singleton(
             \Illuminate\Contracts\Debug\ExceptionHandler::class,
@@ -21,8 +21,8 @@ class ErrorReporterServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/error-reporter.php' => config_path('error-reporter.php'),
-            ], 'error-reporter-config');
+                __DIR__.'/../config/vw-error-reporter.php' => config_path('vw-error-reporter.php'),
+            ], 'vw-error-reporter-config');
         }
     }
 }

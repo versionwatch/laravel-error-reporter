@@ -10,7 +10,7 @@ class ErrorReportingHandler extends Handler
 {
     public function report(Throwable $e)
     {
-        if ($this->shouldReport($e) && config('error-reporter.enabled')) {
+        if ($this->shouldReport($e) && config('vw-error-reporter.enabled')) {
             ErrorReporter::report($e);
         }
 
