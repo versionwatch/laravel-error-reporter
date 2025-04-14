@@ -10,10 +10,9 @@ class ErrorReportingHandler extends Handler
 {
     public function report(Throwable $e)
     {
-        if ($this->shouldReport($e) && config('vw-error-reporter.queue_enabled')) {
+        /*if ($this->shouldReport($e) && config('vw-error-reporter.queue_enabled')) {
             ErrorReporter::report($e);
-        }
-
+        }*/
         parent::report($e);
     }
 }

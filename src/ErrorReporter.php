@@ -2,12 +2,11 @@
 
 namespace VersionWatch\ErrorReporter;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Http;
 
 class ErrorReporter
 {
-    protected static Client $client;
+    protected static $client;
 
     public static function report(\Throwable $e): void
     {
@@ -23,11 +22,16 @@ class ErrorReporter
     private static function sendReport(\Throwable $e): void
     {
         try {
-            self::$client = new Client([
-                'base_uri' => config('vw-error-reporter.endpoint'),
+            self::$client = Http::withOptions([
                 'timeout' => 5,
-            ]);
-
+            ])
+            ->baseUrl(config('vw-error-reporter.endpoint'))
+            ->withHeaders([
+                'X-Project-ID' => config('vw-error-reporter.project_id'),
+                'X-Project-Key' => config('vw-error-reporter.api_key'),
+            ])
+            ->acceptJson();
+                
             $payload = [
                 'exception' => get_class($e),
                 'message' => $e->getMessage(),
@@ -41,17 +45,12 @@ class ErrorReporter
                 ],
                 'context' => [
                     'url' => request()->fullUrl(),
-                    'user' => optional(auth()->user())->id,
-                ]
-            ];
-
-            self::$client->post('/api/errors/report', [
-                'headers' => [
-                    'X-Project-ID' => config('vw-error-reporter.project_id'),
-                    'X-Project-Key' => config('vw-error-reporter.api_key'),
+                    'user' => optional(auth()->user())->id ?? null,
+                    'ip' => request()->ip(),
                 ],
-                'json' => $payload
-            ]);
+            ];
+           
+            $res = self::$client->post(config('vw-error-reporter.endpoint'), $payload);
         } catch (\Exception $e) {
             // Silent fail
         }
