@@ -11,6 +11,17 @@ class ErrorReporter
 
     public static function report(\Throwable $e): void
     {
+        if (config('vw-error-reporter.enabled')) {
+            dispatch(function () use ($e) {
+                self::sendReport($e);
+            })->onQueue('error-reports');
+        } else {
+            self::sendReport($e);
+        }
+    }
+
+    private static function sendReport(\Throwable $e): void
+    {
         try {
             self::$client = new Client([
                 'base_uri' => config('vw-error-reporter.endpoint'),

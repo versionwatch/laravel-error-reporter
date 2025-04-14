@@ -8,4 +8,7 @@ return [
     'ignored_exceptions' => [
         \Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class,
     ],
+
+    'queue_enabled' => env('VERSIONWATCH_QUEUE_ENABLED', false),
+    'queue_name' => env('VERSIONWATCH_QUEUE_NAME', 'versionwatch-errors'),
 ];
