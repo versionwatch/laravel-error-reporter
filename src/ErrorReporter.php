@@ -3,23 +3,49 @@
 namespace VersionWatch\ErrorReporter;
 
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class ErrorReporter
 {
     protected static $client;
 
-    public static function report(\Throwable $e): void
+    public static function report(Throwable $e): void
     {
-        if (config('vw-error-reporter.enabled')) {
-            dispatch(function () use ($e) {
-                self::sendReport($e);
-            })->onQueue('error-reports');
+        $exception = self::formatException($e);
+
+        if (config('vw-error-reporter.queue_enabled')) {
+            dispatch(function () use ($exception) {
+                self::sendReport($exception);
+            })->onQueue(config('vw-error-reporter.queue_name'));
         } else {
-            self::sendReport($e);
+            self::sendReport($exception);
         }
     }
 
-    private static function sendReport(\Throwable $e): void
+    private static function formatException(Throwable $e)
+    {
+        $payload = [
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+            'stack_trace' => $e->getTraceAsString(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'environment' => [
+                'php_version' => PHP_VERSION,
+                'laravel_version' => app()->version(),
+                'environment' => config('app.env'),
+            ],
+            'context' => [
+                'url' => request()->fullUrl(),
+                'user' => optional(auth()->user())->id ?? null,
+                'ip' => request()->ip(),
+            ],
+        ];
+
+        return $payload;
+    }
+
+    private static function sendReport(array $payload): void
     {
         try {
             self::$client = Http::withOptions([
@@ -32,25 +58,7 @@ class ErrorReporter
             ])
             ->acceptJson();
                 
-            $payload = [
-                'exception' => get_class($e),
-                'message' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'environment' => [
-                    'php_version' => PHP_VERSION,
-                    'laravel_version' => app()->version(),
-                    'environment' => config('app.env'),
-                ],
-                'context' => [
-                    'url' => request()->fullUrl(),
-                    'user' => optional(auth()->user())->id ?? null,
-                    'ip' => request()->ip(),
-                ],
-            ];
-           
-            $res = self::$client->post(config('vw-error-reporter.endpoint'), $payload);
+            self::$client->post(config('vw-error-reporter.endpoint'), $payload);
         } catch (\Exception $e) {
             // Silent fail
         }
