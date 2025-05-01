@@ -40,6 +40,8 @@ class ErrorReporter
                 'user' => optional(auth()->user())->id ?? null,
                 'ip' => request()->ip(),
             ],
+            'project_id' => config('vw-error-reporter.project_id'),
+            'api_key' => config('vw-error-reporter.api_key'),
         ];
 
         return $payload;
