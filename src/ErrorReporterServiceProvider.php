@@ -2,6 +2,7 @@
 
 namespace VersionWatch\ErrorReporter;
 
+use App\Exceptions\Handler;
 use Illuminate\Support\ServiceProvider;
 use VersionWatch\ErrorReporter\Exceptions\ErrorReportingHandler as ExceptionsErrorReportingHandler;
 
@@ -13,7 +14,7 @@ class ErrorReporterServiceProvider extends ServiceProvider
         
         $this->app->singleton(
             \Illuminate\Contracts\Debug\ExceptionHandler::class,
-            ExceptionsErrorReportingHandler::class
+            Handler::class
         );
     }
 
