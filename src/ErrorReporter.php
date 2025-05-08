@@ -32,7 +32,8 @@ class ErrorReporter
             'line' => $e->getLine(),
             'environment' => [
                 'language' => "PHP " . PHP_VERSION,
-                'framework' => app()->version(),
+                'framework' => "laravel",
+                'version' => app()->version(),
                 'environment' => config('app.env'),
             ],
             'context' => [
